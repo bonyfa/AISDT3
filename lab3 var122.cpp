@@ -63,6 +63,16 @@ void quick_sort(std::vector<int>& arr, int left, int right, stats& s)
     if (i < right)
         quick_sort(arr, i, right, s);
 }
+stats quick_sort(std::vector<int>& arr, int size)
+{
+    stats statistics;
+    if (size < 2)
+    {
+        return statistics;
+    }
+    quick_sort(arr, 0, size - 1, statistics);
+    return statistics;
+}
 
 
 
@@ -72,7 +82,9 @@ using namespace std;
 
 int main() {
     std::vector<int> v1{ 3,0,2,1,5,9,7 };
+    std::vector<int> v2{ 3,0,2,1,5,9,7 };
     stats s1 = insertion(v1);
+    stats s2 = insertion(v2);
     
     cout << "Check sorts: " << endl;
 
@@ -82,5 +94,12 @@ int main() {
     }
     cout << "Comparision count: " << s1.comparison_count << endl;
     cout << "Copy count: " << s1.copy_count << endl;
+
+    cout << "Qick: " << endl;
+    for (int i = 0; i < v2.size(); ++i) {
+        cout << v2[i] << " " << endl;
+    }
+    cout << "Comparision count: " << s2.comparison_count << endl;
+    cout << "Copy count: " << s2.copy_count << endl;
 
 }
