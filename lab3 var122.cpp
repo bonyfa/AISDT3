@@ -33,6 +33,36 @@ stats insertion(std::vector<int>& arr)
     return statics;
 }
 
+void quick_sort(std::vector<int>& arr, int left, int right, stats& s)
+{
+    int i = left, j = right;
+    int main = arr[left];
+    while (i <= j)
+    {
+        while (arr[i] < main)
+        {
+            s.comparison_count++;
+            i++;
+        }
+        while (arr[j] > main)
+        {
+            s.comparison_count++;
+            j--;
+        }
+        if (i <= j)
+        {
+            swap(arr[i], arr[j]);
+            i++;
+            j--;
+            s.copy_count++;
+        }
+    }
+
+    if (left < j)
+        quick_sort(arr, left, j, s);
+    if (i < right)
+        quick_sort(arr, i, right, s);
+}
 
 
 
