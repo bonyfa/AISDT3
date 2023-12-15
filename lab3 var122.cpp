@@ -73,8 +73,73 @@ stats quick_sort(std::vector<int>& arr, int size)
     quick_sort(arr, 0, size - 1, statistics);
     return statistics;
 }
+void heapify(vector<int>& arr, size_t size, int i, stats& result) {
+    int largest = i;
+    int left = 2 * i + 1;
+    int right = 2 * i + 2;
+    ++result.comparison_count;
+    if (left < size && arr[left] > arr[largest]) {
+        largest = left;
+    }
+    ++result.comparison_count;
+    if (right < size && arr[right] > arr[largest]) {
+        largest = right;
+    }
+
+    if (largest != i) {
+        swap(arr[i], arr[largest]);
+        ++result.copy_count;
+        heapify(arr, size, largest, result);
+    }
+}
+
+stats heap_sort(vector<int>& arr)
+{
+    stats result;
+    size_t size = arr.size();
+    for (int i = size / 2 - 1; i >= 0; i--)
+        heapify(arr, size, i, result);
+
+    for (int i = size - 1; i >= 0; i--)
+    {
+        swap(arr[0], arr[i]);
+        ++result.copy_count;
+        heapify(arr, i, 0, result);
+    }
+    return result;
+}
 
 
+
+std::vector<int> normal_vector(int size)
+{
+    std::vector<int> arr;
+    for (int i = 0; i < size; ++i)
+    {
+        arr.push_back(i);
+    }
+    return arr;
+}
+
+std::vector<int> reverse_vector(int size)
+{
+    std::vector<int> arr;
+    for (int i = size - 1; i >= 0; --i)
+    {
+        arr.push_back(i);
+    }
+    return arr;
+}
+
+std::vector<int> random_vector(int size)
+{
+    std::vector<int> arr;
+    for (int i = 0; i < size; ++i)
+    {
+        arr.push_back(rand() % 100);
+    }
+    return arr;
+}
 
 #define SIZE 1000
 
@@ -83,8 +148,10 @@ using namespace std;
 int main() {
     std::vector<int> v1{ 3,0,2,1,5,9,7 };
     std::vector<int> v2{ 3,0,2,1,5,9,7 };
+    std::vector<int> v3{ 3,0,2,1,5,9,7 };
     stats s1 = insertion(v1);
-    stats s2 = insertion(v2);
+    stats s2 = quick_sort(v2, v2.size());
+    stats s3 = heap_sort(v3);
     
     cout << "Check sorts: " << endl;
 
@@ -101,5 +168,12 @@ int main() {
     }
     cout << "Comparision count: " << s2.comparison_count << endl;
     cout << "Copy count: " << s2.copy_count << endl;
+
+    cout << "Heap sort: " << endl;
+    for (int i = 0; i < v3.size(); ++i) {
+        cout << v3[i] << " " << endl;
+    }
+    cout << "Comparision count: " << s3.comparison_count << endl;
+    cout << "Copy count: " << s3.copy_count << endl;
 
 }
