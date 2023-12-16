@@ -140,6 +140,109 @@ std::vector<int> random_vector(int size)
     }
     return arr;
 }
+template <class Iterator>
+stats insertion(Iterator begin, Iterator end)
+{
+    stats statics;
+    for (Iterator i = begin; i != end; ++i)
+    {
+        for (Iterator j = i; j != begin; --j)
+        {
+            ++statics.comparison_count;
+            if (*j < *(j - 1))
+            {
+                swap(*j, *(j - 1));
+                ++statics.copy_count;
+            }
+            else
+                break;
+        }
+    }
+    return statics;
+}
+
+template <class Iterator>
+void quick_sort(Iterator begin, Iterator end, stats& s)
+{
+    if (distance(begin, end) < 2)
+    {
+        return;
+    }
+    Iterator i = begin;
+    Iterator main = prev(end);
+    Iterator pivot = next(begin, distance(begin, end) / 2);
+    iter_swap(pivot, main);
+    pivot = main;
+    for (Iterator j = begin; j != main; ++j)
+    {
+        if (*j < *main)
+        {
+            if (*i != *j)
+            {
+                iter_swap(i, j);
+                s.copy_count++;
+            }
+            ++i;
+        }
+        s.comparison_count++;
+    }
+    iter_swap(i, main);
+    s.copy_count++;
+    quick_sort(begin, i, s);
+    quick_sort(next(i), end, s);
+}
+
+template <class Iterator>
+stats quick_sort(Iterator begin, Iterator end)
+{
+    stats statistics;
+    if (distance(begin, end) < 2)
+    {
+        return statistics;
+    }
+    quick_sort(begin, end, statistics);
+    return statistics;
+}
+
+
+template <typename Iterator>
+void heapify(Iterator begin, Iterator end, Iterator it, stats& result) {
+    auto size = distance(begin, end);
+    auto i = distance(begin, it);
+    auto largest = i;
+    auto left = 2 * i + 1;
+    auto right = 2 * i + 2;
+    ++result.comparison_count;
+    if (left < size && *(begin + left) > *(begin + largest)) {
+        largest = left;
+    }
+    ++result.comparison_count;
+    if (right < size && *(begin + right) > *(begin + largest)) {
+        largest = right;
+    }
+
+    if (largest != i) {
+        iter_swap(it, begin + largest);
+        ++result.copy_count;
+        heapify(begin, end, begin + largest, result);
+    }
+}
+
+template <typename Iterator>
+stats heap_sort(Iterator begin, Iterator end) {
+    stats result;
+    auto size = distance(begin, end);
+
+    for (auto i = size / 2 - 1; i >= 0; --i)
+        heapify(begin, end, begin + i, result);
+
+    for (auto i = size - 1; i >= 0; --i) {
+        iter_swap(begin, begin + i);
+        ++result.copy_count;
+        heapify(begin, begin + i, begin, result);
+    }
+    return result;
+}
 
 #define SIZE 1000
 
@@ -175,5 +278,9 @@ int main() {
     }
     cout << "Comparision count: " << s3.comparison_count << endl;
     cout << "Copy count: " << s3.copy_count << endl;
+
+    std::vector<int> v4{ 3,0,2,1,5,9,7 };
+    std::vector<int> v5{ 3,0,2,1,5,9,7 };
+    std::vector<int> v6{ 3,0,2,1,5,9,7 };
 
 }
